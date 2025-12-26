@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adity's Secret Garden | Shubham</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-pink: #ff8fa3;
+            --soft-white: #fffafa;
+            --accent: #ff4d6d;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            background: var(--soft-white);
+            color: #444;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* 1. Enhanced Lock Page Decoration */
+        #lock-screen {
+            position: fixed; inset: 0;
+            background: linear-gradient(135deg, #fff 0%, #ffe5ec 100%);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 10000; transition: 1.5s cubic-bezier(0.6, 0.05, 0.1, 0.99);
+            clip-path: circle(150% at 50% 50%);
+        }
+        #lock-screen.unlocked { clip-path: circle(0% at 50% 50%); }
+
+        .lock-card {
+            text-align: center;
+            padding: 60px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 40px;
+            box-shadow: 0 20px 60px rgba(255, 143, 163, 0.2);
+            border: 2px solid white;
+            position: relative;
+        }
+
+        .lock-card::before {
+            content: '🌸'; position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+            font-size: 40px;
+        }
+
+        .lock-card h2 { font-family: 'Dancing Script'; font-size: 3rem; color: var(--accent); margin-bottom: 30px; }
+        
+        .lock-input {
+            padding: 15px 30px; border-radius: 50px; border: 2px solid var(--primary-pink);
+            width: 250px; font-size: 1.1rem; text-align: center; outline: none;
+            transition: 0.3s; background: white;
+        }
+        .lock-input:focus { box-shadow: 0 0 20px var(--primary-pink); }
+
+        /* Background Animation (Floating Clouds/Bubbles) */
+        .bg-circles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
+        .bg-circles li {
+            position: absolute; list-style: none; display: block;
+            background: rgba(255, 143, 163, 0.15);
+            bottom: -150px; animation: animateCircles 25s linear infinite;
+        }
+
+        @keyframes animateCircles {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 0; }
+            100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; border-radius: 50%; }
+        }
+
+        /* 2. Zig-Zag Memory Layout */
+        .section { padding: 100px 20px; max-width: 1100px; margin: 0 auto; display: none; }
+        .memory-row {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 120px; gap: 50px; opacity: 0; transform: translateY(50px);
+            transition: 1s ease;
+        }
+        .memory-row.reveal { opacity: 1; transform: translateY(0); }
+        .memory-row:nth-child(even) { flex-direction: row-reverse; }
+
+        .image-box { flex: 1; position: relative; }
+        .image-box img { 
+            width: 100%; border-radius: 30px; 
+            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.1));
+            border: 8px solid white; transition: 0.5s;
+        }
+        .image-box:hover img { transform: scale(1.03) rotate(-1deg); }
+
+        .text-box { flex: 1; }
+        .text-box h3 { font-family: 'Dancing Script'; font-size: 2.5rem; color: var(--accent); }
+        .text-box p { font-size: 1.1rem; line-height: 1.8; color: #666; }
+
+        /* 3. Pop Bubble Surprises */
+        .surprise-title { text-align: center; font-family: 'Dancing Script'; font-size: 3.5rem; margin: 100px 0 40px; }
+        .bubble-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 40px; }
+        .bubble {
+            width: 130px; height: 130px; background: white; border: 2px dashed var(--primary-pink);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: 500; color: var(--primary-pink); text-align: center; padding: 10px;
+        }
+        .bubble:hover { transform: scale(1.1); background: var(--primary-pink); color: white; border-style: solid; }
+
+        /* 4. Elegant Scroll Letter */
+        .letter-wrap { margin: 150px auto; max-width: 700px; text-align: center; }
+        .scroll-letter {
+            background: #fffef0; padding: 60px; border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 1px solid #e0d9b5;
+            position: relative; overflow: hidden; display: none;
+            animation: unfurl 1.5s ease-out;
+        }
+        @keyframes unfurl { from { max-height: 0; opacity: 0; } to { max-height: 1000px; opacity: 1; } }
+
+        .scroll-letter h2 { font-family: 'Dancing Script'; color: #8e735b; font-size: 3rem; }
+        .scroll-letter p { font-family: 'Dancing Script'; font-size: 1.8rem; line-height: 1.6; color: #5d4a3a; text-align: left; }
+
+        .btn-letter {
+            background: var(--accent); color: white; border: none; padding: 18px 45px;
+            border-radius: 50px; font-size: 1.1rem; cursor: pointer; transition: 0.3s;
+        }
+
+        /* Heart Burst Animation */
+        .heart-burst {
+            position: fixed; pointer-events: none;
+            animation: fly 2s linear forwards; z-index: 10001;
+        }
+        @keyframes fly {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-500px) rotate(360deg) scale(0); opacity: 0; }
+        }
+
+        footer { text-align: center; padding: 80px; background: #fff; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+    <ul class="bg-circles" id="bg-circles"></ul>
+
+    <div id="lock-screen">
+        <div class="lock-card">
+            <h2>Shubham's Heart</h2>
+            <p>What is the password for Adity's world?</p>
+            <input type="password" id="passInput" class="lock-input" placeholder="Type here...">
+            <br><br>
+            <button onclick="unlock()" class="btn-letter">Open Garden</button>
+        </div>
+    </div>
+
+    <div id="main-content" class="section">
+        <div style="text-align: center; margin-bottom: 100px;">
+            <p style="letter-spacing: 4px; font-weight: 300;">SINCE 12 MARCH 2025</p>
+            <h1 style="font-family: 'Dancing Script'; font-size: 5.5rem; color: var(--accent); margin: 0;">For My Adity</h1>
+        </div>
+
+        <div id="story-grid"></div>
+
+        <h2 class="surprise-title">Bubbles of Love</h2>
+        <div class="bubble-grid" id="bubbleGrid"></div>
+
+        <div class="letter-wrap">
+            <button class="btn-letter" id="letterBtn" onclick="openLetter()">Open My Secret Scroll 📜</button>
+            <div class="scroll-letter" id="secretLetter">
+                <h2>Dear Adity,</h2>
+                <p>
+                    I coded this garden just for you. Every photo in the zig-zag path above is a stone in the foundation of our life together. <br><br>
+                    Being a Techfest runner-up meant a lot to me, but honestly, winning your heart is the only trophy I truly care about. You are my most beautiful algorithm, my perfect design, and my favorite person.<br><br>
+                    I love you, now and forever.<br><br>
+                    — Shubham Mahato
+                </p>
+            </div>
+        </div>
+
+        <footer>
+            <p style="font-weight: 500;">Designed with Pure Devotion</p>
+            <p>Shubham Mahato | Techfest 2024 Runner-Up</p>
+        </footer>
+    </div>
+
+    <script>
+        // Generate Background Circles
+        const bg = document.getElementById('bg-circles');
+        for(let i=0; i<15; i++) {
+            const li = document.createElement('li');
+            const size = Math.random() * 100 + 20;
+            li.style.width = size + 'px';
+            li.style.height = size + 'px';
+            li.style.left = Math.random() * 100 + '%';
+            li.style.animationDelay = Math.random() * 20 + 's';
+            li.style.animationDuration = Math.random() * 15 + 10 + 's';
+            bg.appendChild(li);
+        }
+
+        const surprises = ["My Queen", "Infinite Love", "Tech & Heart", "Perfect Soul", "My Sunshine", "Adity + Shubham", "Always You", "My Pride"];
+
+        function unlock() {
+            if(document.getElementById('passInput').value.toLowerCase() === 'adity') {
+                // Heart Burst Animation
+                for(let i=0; i<30; i++) {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart-burst';
+                    heart.innerHTML = '❤️';
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.top = '100vh';
+                    heart.style.fontSize = (Math.random() * 30 + 10) + 'px';
+                    heart.style.animationDelay = (Math.random() * 1) + 's';
+                    document.body.appendChild(heart);
+                    setTimeout(() => heart.remove(), 2000);
+                }
+
+                document.getElementById('lock-screen').classList.add('unlocked');
+                document.getElementById('main-content').style.display = 'block';
+                renderContent();
+            }
+        }
+
+        function renderContent() {
+            const grid = document.getElementById('story-grid');
+            for(let i=1; i<=26; i++) {
+                const row = document.createElement('div');
+                row.className = 'memory-row';
+                row.innerHTML = `
+                    <div class="image-box"><img src="img${i}.png"></div>
+                    <div class="text-box">
+                        <h3>Chapter ${i}</h3>
+                        <p>This image represents a beautiful fragment of our timeline. Adity, every time I look at this, I'm reminded of why I'm the luckiest guy in the world.</p>
+                    </div>
+                `;
+                grid.appendChild(row);
+            }
+
+            const bubGrid = document.getElementById('bubbleGrid');
+            surprises.forEach(s => {
+                const b = document.createElement('div');
+                b.className = 'bubble'; b.innerText = 'Click Me';
+                b.onclick = () => { b.innerText = s; b.style.background = '#ff8fa3'; b.style.color = 'white'; };
+                bubGrid.appendChild(b);
+            });
+
+            // Scroll Animation Observer
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('reveal'); });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.memory-row').forEach(r => observer.observe(r));
+        }
+
+        function openLetter() {
+            document.getElementById('letterBtn').style.display = 'none';
+            document.getElementById('secretLetter').style.display = 'block';
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
